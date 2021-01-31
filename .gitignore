@@ -121,3 +121,7 @@ kernel/configs/android-*.cfg
 
 # out build dir
 outputdTissot-4.9-Custom-Hybrid
+#
+#Ignoring Android.bp link file
+#
+Android.bp
