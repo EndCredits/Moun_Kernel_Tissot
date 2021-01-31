@@ -19,10 +19,11 @@
 	firmware: firmware {
 		android {
 			fstab {
-				vendor {
-					fsmgr_flags = "wait";
-					status = "disable";
-				};
+        vendor {
+      		dev = "/dev/block/platform/soc/7824900.sdhci/by-name/cust";
+          fsmgr_flags = "wait";
+      		status = "ok";
+      	};
 				system {
 					compatible = "android,system";
 					dev = "/dev/block/platform/soc/7824900.sdhci/by-name/system";
@@ -150,4 +151,3 @@
 		};
 	};
 };
-
