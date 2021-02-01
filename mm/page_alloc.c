@@ -66,6 +66,8 @@
 #include <linux/memcontrol.h>
 #include <linux/show_mem_notifier.h>
 #include <linux/psi.h>
+#include <linux/khugepaged.h>
+#include <linux/highmem.h>
 
 #include <asm/sections.h>
 #include <asm/tlbflush.h>
