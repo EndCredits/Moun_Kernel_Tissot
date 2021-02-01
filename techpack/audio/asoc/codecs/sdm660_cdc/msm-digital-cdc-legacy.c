@@ -141,7 +141,7 @@ static int msm_digcdc_clock_control(bool flag)
 			}
 			pr_debug("enabled digital codec core clk\n");
 			atomic_set(&pdata->int_mclk0_enabled, true);
-			schedule_delayed_work(&pdata->disable_int_mclk0_work,
+			queue_delayed_work(system_power_efficient_wq,&pdata->disable_int_mclk0_work,
 					      50);
 		}
 	} else {
@@ -998,13 +998,13 @@ static int msm_dig_cdc_codec_enable_dec(struct snd_soc_dapm_widget *w,
 		/* enable HPF */
 		snd_soc_update_bits(codec, tx_mux_ctl_reg, 0x08, 0x00);
 
-		schedule_delayed_work(
+		queue_delayed_work(system_power_efficient_wq,
 			    &msm_dig_cdc->tx_mute_dwork[decimator - 1].dwork,
 			    msecs_to_jiffies(tx_unmute_delay));
 		if (tx_hpf_work[decimator - 1].tx_hpf_cut_of_freq !=
 				CF_MIN_3DB_150HZ) {
 
-			schedule_delayed_work(&tx_hpf_work[decimator - 1].dwork,
+			queue_delayed_work(system_power_efficient_wq,&tx_hpf_work[decimator - 1].dwork,
 					msecs_to_jiffies(300));
 		}
 		/* apply the digital gain after the decimator is enabled*/
@@ -1207,6 +1207,12 @@ static ssize_t msm_dig_codec_version_read(struct snd_info_entry *entry,
 
 	switch (msm_dig->version) {
 	case DRAX_CDC:
+	case DIANGU:
+	case CAJON_2_0:
+	case CAJON:
+	case CONGA:
+	case TOMBAK_2_0:
+	case TOMBAK_1_0:
 		len = snprintf(buffer, sizeof(buffer), "SDM660-CDC_1_0\n");
 		break;
 	default:
@@ -1410,11 +1416,13 @@ static ssize_t speaker_gain_store(struct kobject *kobj,
 	int input;
 
 	sscanf(buf, "%d", &input);
-
-	if (input >= 0 && input <= 6)
-		speaker_gain_val = sound_control_speaker_gain(input);
-	else
-		speaker_gain_val = sound_control_speaker_gain(6);
+	
+/*
+ *	if (input >= 0 && input <= 6)
+ *		speaker_gain_val = sound_control_speaker_gain(input);
+ *	else
+ *		speaker_gain_val = sound_control_speaker_gain(6);
+ */
 
 	return count;
 }
